@@ -5,8 +5,8 @@ import smtplib
 import yfinance as yf
 
 import azure.functions as func
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
+#from datetime import timedelta
 
 def main(mytimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.today()
