@@ -99,18 +99,18 @@ def main(mytimer: func.TimerRequest) -> None:
                 finalstock = (', '.join(result))
 
             # Defing the mail service I am using. In this case it is gmail.
-            #mail = smtplib.SMTP('smtp.gmail.com',587)
+            mail = smtplib.SMTP('smtp.gmail.com',587)
 
             # Starting the logic for smtplib mail to send the information using my gmail to my phone.
-            #mail.ehlo()
-            #mail.starttls()
-            #mail.login('navi.notify@gmail.com', 'ed9UklZF#Em4C9KI')
+            mail.ehlo()
+            mail.starttls()
+            mail.login('navi.notify@gmail.com', 'ed9UklZF#Em4C9KI')
             # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
             message = 'Hey, Listen! Your interested stock price values for today (' + today.strftime('%m-%d-%y') + ') are...' + str(finalstock)
-            #mail.sendmail('navi.notify@gmail.com', usernumber, str(message))
+            mail.sendmail('navi.notify@gmail.com', usernumber, str(message))
 
-            #mail.close()
+            mail.close()
 
         print(message)
     stock()
