@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 
 def main(mytimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.today()
-   # print('Hello')
     def stock():
         #################################################################################################
         # Below is defining stock market holidays and days of the week to get previous stock quotes.
