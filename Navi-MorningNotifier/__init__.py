@@ -6,6 +6,14 @@ import yfinance as yf
 import azure.functions as func
 from datetime import datetime, timedelta
 
+navihost = '{navihost}'
+navidb = '{navidb}'
+naviuser = '{naviuser}'
+navipwd = '{navipwd}'
+naviport = '{naviport}'
+navimail = '{navimail}'
+navimailpwd = '{navimailpwd}'
+
 def main(mytimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.today()
     def stock():
@@ -24,11 +32,11 @@ def main(mytimer: func.TimerRequest) -> None:
         stock_dict = {}
 
         con = psycopg2.connect(
-            host='naviserver.postgres.database.azure.com',
-            database='Navi',
-            user='naviadmin@naviserver',
-            password='v!z&jKP4Pxi2llnl',
-            port='5432')
+            host = navihost,
+            database = navidb,
+            user = naviuser,
+            password = navipwd,
+            port = naviport)
 
         cur = con.cursor()
 
@@ -97,11 +105,11 @@ def main(mytimer: func.TimerRequest) -> None:
                 # Starting the logic for smtplib mail to send the information using my gmail to my phone.
                 mail.ehlo()
                 mail.starttls()
-                mail.login('navi.notify@gmail.com', 'ed9UklZF#Em4C9KI')
+                mail.login(navimail, navimailpwd)
                 # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
                 message = 'Hey, Listen! Your interested stock price values for today (' + today.strftime('%m-%d-%y') + ') are...' + str(finalstock)
-                mail.sendmail('navi.notify@gmail.com', usernumber, str(message))
+                mail.sendmail(navimail, usernumber, str(message))
 
                 mail.close()
             
@@ -141,11 +149,11 @@ def main(mytimer: func.TimerRequest) -> None:
                 # Starting the logic for smtplib mail to send the information using my gmail to my phone.
                 mail.ehlo()
                 mail.starttls()
-                mail.login('navi.notify@gmail.com', 'ed9UklZF#Em4C9KI')
+                mail.login(navimail, navimailpwd)
                 # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
                 message = 'Hey, Listen! Your interested stock price values for today (' + today.strftime('%m-%d-%y') + ') are...' + str(finalstock)
-                mail.sendmail('navi.notify@gmail.com', usernumber, str(message))
+                mail.sendmail(navimail, usernumber, str(message))
 
                 mail.close()
 
@@ -185,11 +193,11 @@ def main(mytimer: func.TimerRequest) -> None:
                 # Starting the logic for smtplib mail to send the information using my gmail to my phone.
                 mail.ehlo()
                 mail.starttls()
-                mail.login('navi.notify@gmail.com', 'ed9UklZF#Em4C9KI')
+                mail.login(navimail, navimailpwd)
                 # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
                 message = 'Hey, Listen! Your interested stock price values for today (' + today.strftime('%m-%d-%y') + ') are...' + str(finalstock)
-                mail.sendmail('navi.notify@gmail.com', usernumber, str(message))
+                mail.sendmail(navimail, usernumber, str(message))
 
                 mail.close()
 
@@ -229,11 +237,11 @@ def main(mytimer: func.TimerRequest) -> None:
                 # Starting the logic for smtplib mail to send the information using my gmail to my phone.
                 mail.ehlo()
                 mail.starttls()
-                mail.login('navi.notify@gmail.com', 'ed9UklZF#Em4C9KI')
+                mail.login(navimail, navimailpwd)
                 # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
                 message = 'Hey, Listen! Your interested stock price values for today (' + today.strftime('%m-%d-%y') + ') are...' + str(finalstock)
-                mail.sendmail('navi.notify@gmail.com', usernumber, str(message))
+                mail.sendmail(navimail, usernumber, str(message))
 
                 mail.close()
         print(message)
