@@ -1,11 +1,12 @@
-# TimerTrigger - Python
+# Navi-MorningNotifier TimerTrigger -Python
 
-The `TimerTrigger` makes it incredibly easy to have your functions executed on a schedule. This sample demonstrates a simple use case of calling your function every 5 minutes.
+The `Navi-MorningNotifier` Azure Function runs each weekday morning (sans holidays) at 9:30am (Cental Time) and sends a text message to specified users of stock price and changes which they are interested in. For an example of what the message looks like, see below:
+
+>  Hey, Listen! 
+>  Your interested stock price values for today (05-26-20) are...
+
+>  MSFT = $185.27 | $-1.39 -0.75% from prev close,
+>  VOO = $276.31 | $3.41 !.25% from prev close
 
 ## How it works
-
-For a `TimerTrigger` to work, you provide a schedule in the form of a [cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression)(See the link for full details). A cron expression is a string with 6 separate expressions which represent a given schedule via patterns. The pattern we use to represent every 5 minutes is `0 */5 * * * *`. This, in plain text, means: "When seconds is equal to 0, minutes is divisible by 5, for any hour, day of the month, month, day of the week, or year".
-
-## Learn more
-
-<TODO> Documentation
+The `Navi-MorningNotifier` works by using the code within the _init_.py file to query an Azure PostgresDB and obtain user information. The PostgresDB contains users name, phone number, carrier information, and the stocks they are interested in. The python script then uses that information to call yfinance for the stock information. Then based off the day the python script iterates through each user and sends and email with the price of the stock as of 9:30am and also the changes in price and percentage from previous close.
