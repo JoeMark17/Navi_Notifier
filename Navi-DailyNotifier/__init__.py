@@ -14,6 +14,14 @@ naviport='{naviport}'
 navimail='{navimail}'
 navimailpwd='{navimailpwd}'
 
+##Below is the dictionary format the PostgresDB tables are eventually converted to
+##If you do not want to set up and pay for a hosted PostgresDB, you can instead opt to just use and update the dictionary format
+##If so, remove the comment for the below two variables, then comment out the blocks of code from Beginning of PostgresDB Specific to End of PostgresDB Specific
+
+#stock_dict = {'NotifierString': {'Stock1': ('Stock-Low','Stock-High'), 'Stock2': ('Stock-Low', 'Stock-High'), 'Stock3': ('Stock-Low', 'Stock-High')},
+            #'NotofierString': {'Stock1': ('Stock-Low', 'Stock-High'), 'Stock4': ('Stock-Low', 'Stock-High')}}
+#ticker = ('Stock1','Stock2','Stock3','Stock4')
+
 def main(mytimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.today()
     def stock():
@@ -43,6 +51,7 @@ def main(mytimer: func.TimerRequest) -> None:
             prior = yesterday
 
     #################################################################################################
+    # Beginning of PostgresDB Specific
     # Below is establishing connection to Postgres DB and executing select queries.
         stock_dict = {}
 
@@ -86,7 +95,8 @@ def main(mytimer: func.TimerRequest) -> None:
         for stock_integer in stock_dict:
             for actual in stock_dict[stock_integer]:
                 stock_dict[stock_integer][actual] = (stock_live.get(actual), stock_prev.get(actual))
-
+    
+    # End of PostgresDB Specific 
         for u, s in stock_dict.items():
             usernumber = u
             result = []
