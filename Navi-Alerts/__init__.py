@@ -42,7 +42,7 @@ def main(mytimer: func.TimerRequest) -> None:
                     'FROM Public."Stocks" S '
                     'INNER JOIN Public."Users" U ON U."UserID" = S."UserID" '
                     'INNER JOIN Public."EmailCarrier" EC ON EC."Email-Carrier" = U."Email-Carrier" '
-                    #'WHERE U."UserID" = 1 '
+                    'WHERE U."UserID" = 1 '
                     'ORDER BY U."UserID" ASC;')
         stock_ticker = ('SELECT DISTINCT S."Stock" FROM Public."Stocks" S;')
 
@@ -108,19 +108,22 @@ def main(mytimer: func.TimerRequest) -> None:
 
                     final_alert = (', '.join(alerts))
 
-            mail = smtplib.SMTP('smtp.gmail.com',587)
+            if(len(final_alert) == 0): 
+                pass
+            else:
+                mail = smtplib.SMTP('smtp.gmail.com',587)
 
-            # Starting the logic for smtplib mail to send the information using my gmail to my phone.
-            mail.ehlo()
-            mail.starttls()
-            mail.login(navimail, navimailpwd)
-            # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
+                # Starting the logic for smtplib mail to send the information using my gmail to my phone.
+                mail.ehlo()
+                mail.starttls()
+                mail.login(navimail, navimailpwd)
+                # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
-            message = 'Hey, Listen! \n\nThere have been stock changes as of (' + today.strftime('%m-%d-%y %X') + ')!\n' + str(final_alert)
-            mail.sendmail(navimail, usernumber, str(message))
+                message = 'Hey, Listen! \n\nThere have been stock changes as of (' + today.strftime('%m-%d-%y %X') + ')!\n' + str(final_alert)
+                mail.sendmail(navimail, usernumber, str(message))
 
-            mail.close()
-            print(message) 
+                mail.close()
+                print(message) 
     stockstest()
 
     if mytimer.past_due:
