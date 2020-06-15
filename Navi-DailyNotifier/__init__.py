@@ -65,14 +65,13 @@ def main(mytimer: func.TimerRequest) -> None:
         cur = con.cursor()
 
         user_call = (
-            'SELECT CONCAT(U."NotifierString",EC."EC-String") as "NotifierString", S."Stock", S."Stock-Low", S."Stock-High" '
-            'FROM Public."Stocks" S '
-            'INNER JOIN Public."Users" U ON U."UserID" = S."UserID" '
-            'INNER JOIN Public."EmailCarrier" EC ON EC."Email-Carrier" = U."Email-Carrier" '
-            ## 'WHERE U."UserID" = 1 ORDER BY U."UserID" ASC;')
-            'WHERE U."ActiveFlag" = \'Y\' ORDER BY U."UserID" ASC;')
+            'SELECT CONCAT(U."NotifierString",EC."ECString") as "NotifierString", S."Stock", S."StockLow", S."StockHigh" '
+            'FROM Public."accounts_stocks" S '
+            'LEFT JOIN Public."accounts_users_dj" U ON U."id" = S."User_id" '
+            'LEFT JOIN Public."accounts_emailcarrier" EC ON EC."EmailCarrier" = U."EmailCarrier" '
+            'WHERE U."ActiveFlag" = \'Y\' ORDER BY U."id" ASC;')
 
-        stock_ticker = ('SELECT DISTINCT S."Stock" FROM Public."Stocks" S;')
+        stock_ticker = ('SELECT DISTINCT S."Stock" FROM Public."accounts_stocks" S;')
 
         cur.execute(user_call)
         user = cur.fetchall()
