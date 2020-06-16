@@ -121,7 +121,11 @@ def main(mytimer: func.TimerRequest) -> None:
                 # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
                 message = 'Hey, Listen! \n\nThere have been stock changes as of (' + today.strftime('%m-%d-%y %X') + ')!\n' + str(final_alert)
-                mail.sendmail(navimail, usernumber, str(message))
+
+                try:
+                    mail.sendmail(navimail, usernumber, str(message))
+                except:
+                    pass
 
                 mail.close()
                 print(message) 

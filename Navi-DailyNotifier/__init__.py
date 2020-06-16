@@ -128,7 +128,11 @@ def main(mytimer: func.TimerRequest) -> None:
             # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
 
             message = 'Hey, Listen! \n\nYour interested stock price values for today (' + today.strftime('%m-%d-%y') + ') are...' + str(finalstock)
-            mail.sendmail(navimail, usernumber, str(message))
+
+            try:
+                mail.sendmail(navimail, usernumber, str(message))
+            except:
+                pass
 
             mail.close()
             print(message)
