@@ -58,9 +58,9 @@ def main(mytimer: func.TimerRequest) -> None:
         
         for column in user:
             if column[0] in stock_dict:
-                stock_dict[column[0]][column[1]][column[2]] = (column[3], column[4], stock_live.get(column[2]))
+                stock_dict[column[0]] = {column[0]: {column[1]: (column[2], column[3], stock_live.get(column[1]))}}
             else:
-                stock_dict[column[0]] = {column[1]: {column[2]: (column[3], column[4], stock_live.get(column[2]))}}
+                pass
 
         for key, user in stock_dict.items():
             userid = key
@@ -79,8 +79,8 @@ def main(mytimer: func.TimerRequest) -> None:
                     if stock_live < user_low: 
                         cur = con.cursor()
                         ##Multiply the stock_low by .90 so the database can dynamically change the low threshold when it is met.
-                        low_insert_command = 'UPDATE public."Stocks" SET "Stock-Low" = ("Stock-Low" * .90) '
-                        'WHERE "UserID" ='+ str(userid) +' and "Stock" = \''+ str(stock) + '\';'
+                        low_insert_command = 'UPDATE public."accounts_stocks" SET "StockLow" = ("StockLow" * .90) '
+                        'WHERE "User_id" ='+ str(userid) +' and "Stock" = \''+ str(stock) + '\';'
                         cur.execute(low_insert_command)
                         con.commit()
                         
@@ -93,8 +93,8 @@ def main(mytimer: func.TimerRequest) -> None:
                     elif stock_live > user_high:
                         cur = con.cursor()
                         ##Multiply the stock_low by 1.10 so the database can dynamically change the high threshold when it is met.
-                        high_insert_command = 'UPDATE public."Stocks" SET "Stock-High" = ("Stock-High" * 1.10) '
-                        'WHERE "UserID" ='+ str(userid) +' and "Stock" = \''+ str(stock) + '\';'
+                        high_insert_command = 'UPDATE public."accounts_stocks" SET "StockHigh" = ("StockHigh" * 1.10) '
+                        'WHERE "User_id" ='+ str(userid) +' and "Stock" = \''+ str(stock) + '\';'
                         cur.execute(high_insert_command)
                         con.commit()
                         
