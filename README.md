@@ -4,4 +4,3 @@
 # How it works
 I leverage three Azure Functions currently to execute the python scripts. One in the morning, one in the afternoon, and one every 15 minutes between the hours of 9:30am and 4:00pm (Central Time) on Weekdays. In addition to Azure Functions, I leverage an Azure PostgresDB which contains user information which the python script calls from.
 
-# [In-Progress]
