@@ -39,11 +39,11 @@ def main(mytimer: func.TimerRequest) -> None:
         cur = con.cursor()
 
         user_call = (
-            'SELECT CONCAT(U."NotifierString",EC."ECString") as "NotifierString", S."Stock", S."StockLow", S."StockHigh" '
-            'FROM Public."accounts_stocks" S '
-            'LEFT JOIN Public."accounts_users_dj" U ON U."id" = S."User_id" '
-            'LEFT JOIN Public."accounts_emailcarrier" EC ON EC."EmailCarrier" = U."EmailCarrier" '
-            'WHERE U."ActiveFlag" = \'Y\' ORDER BY U."id" ASC;')
+                'SELECT U."id", CONCAT(U."NotifierString",EC."ECString") as "NotifierString", S."Stock", S."StockLow", S."StockHigh" '
+                'FROM Public."accounts_stocks" S '
+                'LEFT JOIN Public."accounts_users_dj" U ON U."id" = S."User_id" '
+                'LEFT JOIN Public."accounts_emailcarrier" EC ON EC."EmailCarrier" = U."EmailCarrier" '
+                'WHERE U."ActiveFlag" = \'Y\' ORDER BY U."id" ASC;')
 
         stock_ticker = ('SELECT DISTINCT S."Stock" FROM Public."accounts_stocks" S;')
 
@@ -58,9 +58,9 @@ def main(mytimer: func.TimerRequest) -> None:
         
         for column in user:
             if column[0] in stock_dict:
-                stock_dict[column[0]] = {column[0]: {column[1]: (column[2], column[3], stock_live.get(column[1]))}}
+                stock_dict[column[0]][column[1]][column[2]] = (column[3], column[4], float(stock_live.get(column[2])))
             else:
-                pass
+                stock_dict[column[0]] = {column[1]: {column[2]: (column[3], column[4], float(stock_live.get(column[2])))}}
 
         for key, user in stock_dict.items():
             userid = key
@@ -78,8 +78,8 @@ def main(mytimer: func.TimerRequest) -> None:
                     
                     if stock_live < user_low: 
                         cur = con.cursor()
-                        ##Multiply the stock_low by .90 so the database can dynamically change the low threshold when it is met.
-                        low_insert_command = 'UPDATE public."accounts_stocks" SET "StockLow" = ("StockLow" * .90) '
+                        ##Multiply the stock_low by .95 so the database can dynamically change the low threshold when it is met.
+                        low_insert_command = 'UPDATE public."accounts_stocks" SET "StockLow" = ("StockLow" * .95) '
                         'WHERE "User_id" ='+ str(userid) +' and "Stock" = \''+ str(stock) + '\';'
                         cur.execute(low_insert_command)
                         con.commit()
@@ -92,8 +92,8 @@ def main(mytimer: func.TimerRequest) -> None:
 
                     elif stock_live > user_high:
                         cur = con.cursor()
-                        ##Multiply the stock_low by 1.10 so the database can dynamically change the high threshold when it is met.
-                        high_insert_command = 'UPDATE public."accounts_stocks" SET "StockHigh" = ("StockHigh" * 1.10) '
+                        ##Multiply the stock_low by 1.05 so the database can dynamically change the high threshold when it is met.
+                        high_insert_command = 'UPDATE public."accounts_stocks" SET "StockHigh" = ("StockHigh" * 1.05) '
                         'WHERE "User_id" ='+ str(userid) +' and "Stock" = \''+ str(stock) + '\';'
                         cur.execute(high_insert_command)
                         con.commit()
@@ -109,26 +109,26 @@ def main(mytimer: func.TimerRequest) -> None:
 
                     final_alert = (', '.join(alerts))
 
-            if(len(final_alert) == 0): 
-                pass
-            else:
-                mail = smtplib.SMTP('smtp.gmail.com',587)
-
-                # Starting the logic for smtplib mail to send the information using my gmail to my phone.
-                mail.ehlo()
-                mail.starttls()
-                mail.login(navimail, navimailpwd)
-                # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
-
-                message = 'Hey, Listen! \n\nThere have been stock changes as of (' + today.strftime('%m-%d-%y %X') + ')!\n' + str(final_alert)
-
-                try:
-                    mail.sendmail(navimail, usernumber, str(message))
-                except:
+                if(len(final_alert) == 0): 
                     pass
+                else:
+                    mail = smtplib.SMTP('smtp.gmail.com',587)
 
-                mail.close()
-                print(message) 
+                    # Starting the logic for smtplib mail to send the information using my gmail to my phone.
+                    mail.ehlo()
+                    mail.starttls()
+                    mail.login(navimail, navimailpwd)
+                    # Below (TO) sender pulls from the SQL statement at the begin of the for loop, and the finalstock is pulled from the inner loop
+
+                    message = 'Hey, Listen! \n\nThere have been stock changes as of (' + today.strftime('%m-%d-%y %X') + ')!\n' + str(final_alert)
+
+                    try:
+                        mail.sendmail(navimail, usernumber, str(message))
+                    except:
+                        pass
+
+                    mail.close()
+
     stockstest()
 
     if mytimer.past_due:
